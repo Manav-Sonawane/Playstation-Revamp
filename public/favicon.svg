@@ -1,0 +1,17 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="64" height="64" rx="12" fill="#0a0e1a"/>
+  <circle cx="32" cy="32" r="26" fill="#141824"/>
+  
+  <!-- Triangle - Top -->
+  <path d="M26 18L32 10L38 18Z" stroke="#08BFB5" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Square - Left -->
+  <rect x="12" y="26" width="12" height="12" stroke="#D98CB2" stroke-width="3" fill="none"/>
+  
+  <!-- Circle - Right -->
+  <circle cx="46" cy="32" r="6.5" stroke="#D65C5C" stroke-width="3.5" fill="none"/>
+  
+  <!-- Cross - Bottom -->
+  <path d="M26 46L38 54M38 46L26 54" stroke="#8290BA" stroke-width="3" stroke-linecap="round"/>
+</svg>

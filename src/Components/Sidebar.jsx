@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Home, ShoppingBag, Users, User } from "lucide-react";
 import { userProfile } from "../data/mockData.js";
+import PSLogo from "./PSLogo.jsx";
 
 const Sidebar = ({ activeNav = "Home", onNavChange }) => {
   const navigate = useNavigate();
@@ -36,17 +37,7 @@ const Sidebar = ({ activeNav = "Home", onNavChange }) => {
         className="flex items-center gap-[10px] p-5"
         style={{ borderBottom: "1px solid #1e2d45" }}
       >
-        <div
-          className="flex items-center justify-center"
-          style={{
-            width: "32px",
-            height: "32px",
-            background: "#0070d1",
-            borderRadius: "6px",
-          }}
-        >
-          <span className="text-white font-bold text-[14px]">PS</span>
-        </div>
+        <PSLogo size={40} />
         <span className="text-white font-bold text-[18px]">PlayStation</span>
       </div>
 
