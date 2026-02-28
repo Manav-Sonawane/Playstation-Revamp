@@ -10,12 +10,14 @@ import PSStoreUI from "./Components/StoreUI";
 import Sidebar from "./Components/Sidebar";
 import Navbar from "./Components/Navbar";
 import HeroBanner from "./Components/HeroBanner";
-import ContinuePlaying from "./Components/ContinuePlaying";
-import PersonalizedSection from "./Components/PersonalizedSection";
-import FriendsPanel from "./Components/FriendsPanel";
+import RecentlyPlayed from "./Components/RecentlyPlayed";
+import Statistics from "./Components/Statistics";
+import GroupChat from "./Components/GroupChat";
+import Achievements from "./Components/Achievements";
 
 function HomePage() {
   const [activeNav, setActiveNav] = useState("Home");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
     <div
@@ -47,74 +49,97 @@ function HomePage() {
           animation: "psSlideIn 300ms ease-out",
         }}
       >
-        <Sidebar activeNav={activeNav} onNavChange={setActiveNav} />
+        <Sidebar
+          activeNav={activeNav}
+          onNavChange={setActiveNav}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
       </div>
 
       <div
         style={{
           flex: 1,
-          marginLeft: "240px",
+          marginLeft: isSidebarCollapsed ? "72px" : "240px",
           display: "flex",
           flexDirection: "column",
+          transition: "margin-left 300ms ease",
         }}
       >
-        <Navbar />
+        <Navbar isSidebarCollapsed={isSidebarCollapsed} />
 
         <main
           style={{
             marginTop: "56px",
             overflowY: "auto",
             height: "calc(100vh - 56px)",
+            overflowX: "hidden",
           }}
         >
           <div
             style={{
-              animation: "psFadeUp 400ms ease-out",
-            }}
-          >
-            <HeroBanner />
-          </div>
-
-          <div
-            style={{
               display: "flex",
-              gap: "24px",
-              padding: "32px",
+              gap: "20px",
+              padding: "20px 24px",
               alignItems: "flex-start",
+              maxWidth: "100%",
             }}
           >
+            {/* Main Content Area */}
             <div
               style={{
                 flex: 1,
                 minWidth: 0,
                 display: "flex",
                 flexDirection: "column",
-                gap: "24px",
+                gap: "0",
               }}
             >
               <div
                 style={{
-                  animation: "psFadeUp 500ms ease-out",
+                  animation: "psFadeUp 400ms ease-out",
                 }}
               >
-                <ContinuePlaying />
+                <HeroBanner />
               </div>
 
               <div
                 style={{
-                  animation: "psFadeUp 600ms ease-out",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                  marginTop: "16px",
                 }}
               >
-                <PersonalizedSection />
+                <div
+                  style={{
+                    animation: "psFadeUp 500ms ease-out",
+                  }}
+                >
+                  <RecentlyPlayed />
+                </div>
+
+                <div
+                  style={{
+                    animation: "psFadeUp 600ms ease-out",
+                  }}
+                >
+                  <Statistics />
+                </div>
               </div>
             </div>
 
+            {/* Right Sidebar - Group Chat & Achievements */}
             <div
               style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
                 animation: "psFadeUp 700ms ease-out",
               }}
             >
-              <FriendsPanel />
+              <GroupChat />
+              <Achievements />
             </div>
           </div>
         </main>
@@ -125,6 +150,7 @@ function HomePage() {
 
 function StorePage() {
   const [activeNav, setActiveNav] = useState("Store");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
     <div
@@ -156,24 +182,31 @@ function StorePage() {
           animation: "psSlideIn 300ms ease-out",
         }}
       >
-        <Sidebar activeNav={activeNav} onNavChange={setActiveNav} />
+        <Sidebar
+          activeNav={activeNav}
+          onNavChange={setActiveNav}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
       </div>
 
       <div
         style={{
           flex: 1,
-          marginLeft: "240px",
+          marginLeft: isSidebarCollapsed ? "72px" : "240px",
           display: "flex",
           flexDirection: "column",
+          transition: "margin-left 300ms ease",
         }}
       >
-        <Navbar />
+        <Navbar isSidebarCollapsed={isSidebarCollapsed} />
 
         <main
           style={{
             marginTop: "56px",
             overflowY: "auto",
             height: "calc(100vh - 56px)",
+            overflowX: "hidden",
           }}
         >
           <PSStoreUI />

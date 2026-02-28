@@ -50,7 +50,7 @@ const HeroBanner = () => {
     <section
       className="relative w-full overflow-hidden"
       style={{
-        height: "480px",
+        height: "320px",
         background: heroGame.gradient,
       }}
     >
@@ -103,8 +103,8 @@ const HeroBanner = () => {
       <div
         className="absolute"
         style={{
-          bottom: "48px",
-          left: "48px",
+          bottom: "24px",
+          left: "32px",
           zIndex: 3,
           maxWidth: "640px",
           opacity: visible ? 1 : 0,

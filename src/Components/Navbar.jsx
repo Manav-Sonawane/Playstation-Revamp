@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Search, Bell, Settings } from "lucide-react";
 import { userProfile } from "../data/mockData.js";
 
-const Navbar = () => {
+const Navbar = ({ isSidebarCollapsed = false }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -35,14 +35,37 @@ const Navbar = () => {
       <nav
         className="fixed top-0 right-0 h-[56px] flex items-center px-6 gap-4"
         style={{
-          left: "240px",
+          left: isSidebarCollapsed ? "72px" : "240px",
           zIndex: 100,
           background: "rgba(10, 14, 26, 0.85)",
           backdropFilter: "blur(12px)",
           borderBottom: "1px solid #1e2d45",
+          transition: "left 300ms ease",
         }}
       >
-        {/* LEFT - Search bar */}
+        {/* LEFT - Welcome Message */}
+        <div className="flex items-center gap-2">
+          <span
+            style={{
+              fontSize: "18px",
+              fontWeight: "300",
+              color: "#8a9bb5",
+            }}
+          >
+            Good Morning,
+          </span>
+          <span
+            style={{
+              fontSize: "18px",
+              fontWeight: "600",
+              color: "#ffffff",
+            }}
+          >
+            {userProfile.username}
+          </span>
+        </div>
+
+        {/* MIDDLE - Search bar */}
         <div className="flex-1" style={{ maxWidth: "360px" }}>
           <div
             className="flex items-center h-9 px-[14px] gap-2"

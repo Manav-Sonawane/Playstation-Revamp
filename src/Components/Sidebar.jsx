@@ -1,12 +1,24 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, ShoppingBag, Users, User } from "lucide-react";
+import {
+  Home,
+  ShoppingBag,
+  Users,
+  User,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { userProfile } from "../data/mockData.js";
 import PSLogo from "./PSLogo.jsx";
 
-const Sidebar = ({ activeNav = "Home", onNavChange }) => {
+const Sidebar = ({
+  activeNav = "Home",
+  onNavChange,
+  isCollapsed,
+  onToggleCollapse,
+}) => {
   const navigate = useNavigate();
-  
+
   const navItems = [
     { icon: Home, label: "Home", path: "/home" },
     { icon: ShoppingBag, label: "Store", path: "/store" },
@@ -26,20 +38,67 @@ const Sidebar = ({ activeNav = "Home", onNavChange }) => {
 
   return (
     <aside
-      className="fixed left-0 top-0 h-screen w-[240px] bg-[#0d1117] flex flex-col"
+      className="fixed left-0 top-0 h-screen bg-[#0d1117] flex flex-col"
       style={{
+        width: isCollapsed ? "72px" : "240px",
         borderRight: "1px solid #1e2d45",
         boxShadow: "2px 0 8px rgba(0, 112, 209, 0.15)",
+        transition: "width 300ms ease",
+        zIndex: 200,
       }}
     >
       {/* TOP SECTION - Logo */}
       <div
         className="flex items-center gap-[10px] p-5"
-        style={{ borderBottom: "1px solid #1e2d45" }}
+        style={{
+          borderBottom: "1px solid #1e2d45",
+          justifyContent: isCollapsed ? "center" : "flex-start",
+        }}
       >
-        <PSLogo size={40} />
-        <span className="text-white font-bold text-[18px]">PlayStation</span>
+        <PSLogo size={isCollapsed ? 32 : 40} />
+        {!isCollapsed && (
+          <span className="text-white font-bold text-[18px]">PlayStation</span>
+        )}
       </div>
+
+      {/* Toggle Button - Positioned on sidebar edge */}
+      <button
+        onClick={onToggleCollapse}
+        style={{
+          position: "fixed",
+          left: isCollapsed ? "56px" : "224px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: "32px",
+          height: "32px",
+          borderRadius: "50%",
+          background: "#141824",
+          border: "2px solid #1e2d45",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "all 300ms ease",
+          zIndex: 250,
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "#0070d1";
+          e.currentTarget.style.borderColor = "#0070d1";
+          e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "#141824";
+          e.currentTarget.style.borderColor = "#1e2d45";
+          e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+        }}
+      >
+        {isCollapsed ? (
+          <ChevronRight size={18} style={{ color: "#ffffff" }} />
+        ) : (
+          <ChevronLeft size={18} style={{ color: "#ffffff" }} />
+        )}
+      </button>
 
       {/* NAVIGATION */}
       <nav className="p-3 flex-1">
@@ -51,7 +110,7 @@ const Sidebar = ({ activeNav = "Home", onNavChange }) => {
             <div
               key={item.label}
               onClick={() => handleNavClick(item.label, item.path)}
-              className="flex items-center gap-3 h-12 px-4 cursor-pointer"
+              className="flex items-center gap-3 h-12 cursor-pointer"
               style={{
                 borderRadius: "10px",
                 background: isActive ? "#0070d1" : "transparent",
@@ -60,6 +119,8 @@ const Sidebar = ({ activeNav = "Home", onNavChange }) => {
                   ? "0 0 12px rgba(0, 112, 209, 0.4)"
                   : "none",
                 transition: "all 150ms ease",
+                padding: isCollapsed ? "0" : "0 16px",
+                justifyContent: isCollapsed ? "center" : "flex-start",
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
@@ -73,63 +134,72 @@ const Sidebar = ({ activeNav = "Home", onNavChange }) => {
                   e.currentTarget.style.color = "#8a9bb5";
                 }
               }}
+              title={isCollapsed ? item.label : ""}
             >
               <Icon size={20} />
-              <span>{item.label}</span>
+              {!isCollapsed && <span>{item.label}</span>}
             </div>
           );
         })}
       </nav>
 
       {/* Bottom Section - Level Progress */}
-      <div className="absolute bottom-4 left-3 right-3">
-        <div
-          className="p-4"
-          style={{
-            background: "#141824",
-            borderRadius: "12px",
-            border: "1px solid #1e2d45",
-          }}
-        >
-          {/* Top row */}
-          <div className="flex items-center justify-between">
-            <span style={{ color: "#8a9bb5", fontSize: "12px" }}>
-              Level Progress
-            </span>
-            <span
-              style={{ color: "#0070d1", fontSize: "12px", fontWeight: "bold" }}
-            >
-              {userProfile.level} → {userProfile.nextLevel}
-            </span>
-          </div>
-
-          {/* XP text */}
-          <div style={{ color: "#8a9bb5", fontSize: "11px", marginTop: "8px" }}>
-            {userProfile.currentXP} / {userProfile.nextLevelXP} XP
-          </div>
-
-          {/* Progress bar */}
+      {!isCollapsed && (
+        <div className="absolute bottom-4 left-3 right-3">
           <div
-            className="mt-[6px]"
+            className="p-4"
             style={{
-              height: "4px",
-              background: "#1e2d45",
-              borderRadius: "2px",
-              overflow: "hidden",
+              background: "#141824",
+              borderRadius: "12px",
+              border: "1px solid #1e2d45",
             }}
           >
+            {/* Top row */}
+            <div className="flex items-center justify-between">
+              <span style={{ color: "#8a9bb5", fontSize: "12px" }}>
+                Level Progress
+              </span>
+              <span
+                style={{
+                  color: "#0070d1",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                }}
+              >
+                {userProfile.level} → {userProfile.nextLevel}
+              </span>
+            </div>
+
+            {/* XP text */}
             <div
+              style={{ color: "#8a9bb5", fontSize: "11px", marginTop: "8px" }}
+            >
+              {userProfile.currentXP} / {userProfile.nextLevelXP} XP
+            </div>
+
+            {/* Progress bar */}
+            <div
+              className="mt-[6px]"
               style={{
-                width: `${progressPercent}%`,
-                height: "100%",
-                background: "linear-gradient(90deg, #0070d1, #00d4ff)",
+                height: "4px",
+                background: "#1e2d45",
                 borderRadius: "2px",
-                boxShadow: "0 0 8px rgba(0, 208, 255, 0.5)",
+                overflow: "hidden",
               }}
-            />
+            >
+              <div
+                style={{
+                  width: `${progressPercent}%`,
+                  height: "100%",
+                  background: "linear-gradient(90deg, #0070d1, #00d4ff)",
+                  borderRadius: "2px",
+                  boxShadow: "0 0 8px rgba(0, 208, 255, 0.5)",
+                }}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </aside>
   );
 };
