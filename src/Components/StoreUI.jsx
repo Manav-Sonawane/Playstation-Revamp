@@ -102,7 +102,6 @@ const PSStoreSidebarUI = () => {
             ))}
           </div>
         </div>
-      </div>
     </div>
   );
 };
