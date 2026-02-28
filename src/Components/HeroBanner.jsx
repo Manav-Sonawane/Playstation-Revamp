@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Sparkles, Star, Play } from 'lucide-react';
-import { heroGame } from '../data/mockData.js';
+import React, { useState, useEffect } from "react";
+import { Sparkles, Star, Play } from "lucide-react";
+import { heroGame } from "../data/mockData.js";
 
 // Pre-generated star positions to avoid Math.random() during render
 const STAR_POSITIONS = [
@@ -33,7 +33,7 @@ const STAR_POSITIONS = [
   { x: 88, y: 75, size: 1.4, opacity: 0.5 },
   { x: 5, y: 62, size: 1.9, opacity: 0.6 },
   { x: 95, y: 38, size: 1.5, opacity: 0.5 },
-  { x: 50, y: 5, size: 2.2, opacity: 0.7 }
+  { x: 50, y: 5, size: 2.2, opacity: 0.7 },
 ];
 
 const HeroBanner = () => {
@@ -50,39 +50,40 @@ const HeroBanner = () => {
     <section
       className="relative w-full overflow-hidden"
       style={{
-        height: '480px',
-        background: heroGame.gradient
+        height: "480px",
+        background: heroGame.gradient,
       }}
     >
       {/* Blue ambient glow */}
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: 0,
           left: 0,
-          width: '600px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(0,112,209,0.15) 0%, transparent 70%)',
-          pointerEvents: 'none',
-          zIndex: 1
+          width: "600px",
+          height: "400px",
+          background:
+            "radial-gradient(circle, rgba(0,112,209,0.15) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 1,
         }}
       />
-      
+
       {/* Star field effect */}
       <div className="absolute inset-0 z-0">
         {STAR_POSITIONS.map((star, i) => (
           <div
             key={i}
             style={{
-              position: 'absolute',
+              position: "absolute",
               left: `${star.x}%`,
               top: `${star.y}%`,
               width: `${star.size}px`,
               height: `${star.size}px`,
-              background: 'white',
-              borderRadius: '50%',
+              background: "white",
+              borderRadius: "50%",
               opacity: star.opacity,
-              boxShadow: `0 0 ${star.size * 2}px rgba(255, 255, 255, ${star.opacity})`
+              boxShadow: `0 0 ${star.size * 2}px rgba(255, 255, 255, ${star.opacity})`,
             }}
           />
         ))}
@@ -92,9 +93,9 @@ const HeroBanner = () => {
       <div
         className="absolute bottom-0 left-0 right-0"
         style={{
-          height: '120px',
-          background: 'linear-gradient(to bottom, transparent, #0a0e1a)',
-          zIndex: 2
+          height: "120px",
+          background: "linear-gradient(to bottom, transparent, #0a0e1a)",
+          zIndex: 2,
         }}
       />
 
@@ -102,25 +103,25 @@ const HeroBanner = () => {
       <div
         className="absolute"
         style={{
-          bottom: '48px',
-          left: '48px',
+          bottom: "48px",
+          left: "48px",
           zIndex: 3,
-          maxWidth: '640px',
+          maxWidth: "640px",
           opacity: visible ? 1 : 0,
-          transform: visible ? 'translateY(0)' : 'translateY(20px)',
-          transition: 'opacity 500ms ease 100ms, transform 500ms ease 100ms'
+          transform: visible ? "translateY(0)" : "translateY(20px)",
+          transition: "opacity 500ms ease 100ms, transform 500ms ease 100ms",
         }}
       >
         {/* Badge row */}
         <div className="flex items-center gap-[10px] mb-4">
           <div className="flex items-center gap-1">
-            <Sparkles size={14} style={{ color: '#0070d1' }} />
+            <Sparkles size={14} style={{ color: "#0070d1" }} />
             <span
               style={{
-                fontSize: '11px',
+                fontSize: "11px",
                 fontWeight: 600,
-                color: '#0070d1',
-                letterSpacing: '1.5px'
+                color: "#0070d1",
+                letterSpacing: "1.5px",
               }}
             >
               AI RECOMMENDED
@@ -128,12 +129,12 @@ const HeroBanner = () => {
           </div>
           <div
             style={{
-              background: '#00e676',
-              color: '#000',
-              fontSize: '11px',
+              background: "#00e676",
+              color: "#000",
+              fontSize: "11px",
               fontWeight: 700,
-              padding: '3px 10px',
-              borderRadius: '20px'
+              padding: "3px 10px",
+              borderRadius: "20px",
             }}
           >
             {heroGame.matchPercent}% Match
@@ -143,13 +144,13 @@ const HeroBanner = () => {
         {/* Title */}
         <h1
           style={{
-            fontSize: '58px',
+            fontSize: "58px",
             fontWeight: 800,
-            color: 'white',
+            color: "white",
             lineHeight: 1.05,
-            letterSpacing: '-1.5px',
-            marginBottom: '12px',
-            textShadow: '0 2px 20px rgba(0, 112, 209, 0.3)'
+            letterSpacing: "-1.5px",
+            marginBottom: "12px",
+            textShadow: "0 2px 20px rgba(0, 112, 209, 0.3)",
           }}
         >
           {heroGame.title}
@@ -158,10 +159,10 @@ const HeroBanner = () => {
         {/* Description */}
         <p
           style={{
-            fontSize: '15px',
-            color: '#a0b4cc',
+            fontSize: "15px",
+            color: "#a0b4cc",
             lineHeight: 1.6,
-            marginBottom: '20px'
+            marginBottom: "20px",
           }}
         >
           {heroGame.description}
@@ -170,15 +171,15 @@ const HeroBanner = () => {
         {/* Metadata row */}
         <div className="flex items-center gap-0 mb-7">
           <div className="flex items-center gap-1">
-            <Star size={16} style={{ color: '#f5a623', fill: '#f5a623' }} />
-            <span style={{ color: 'white', fontWeight: 600 }}>
+            <Star size={16} style={{ color: "#f5a623", fill: "#f5a623" }} />
+            <span style={{ color: "white", fontWeight: 600 }}>
               {heroGame.rating}/5
             </span>
           </div>
-          <span style={{ color: '#8a9bb5', margin: '0 10px' }}>•</span>
-          <span style={{ color: '#8a9bb5' }}>{heroGame.genre}</span>
-          <span style={{ color: '#8a9bb5', margin: '0 10px' }}>•</span>
-          <span style={{ color: '#8a9bb5' }}>{heroGame.players}</span>
+          <span style={{ color: "#8a9bb5", margin: "0 10px" }}>•</span>
+          <span style={{ color: "#8a9bb5" }}>{heroGame.genre}</span>
+          <span style={{ color: "#8a9bb5", margin: "0 10px" }}>•</span>
+          <span style={{ color: "#8a9bb5" }}>{heroGame.players}</span>
         </div>
 
         {/* Buttons row */}
@@ -186,52 +187,53 @@ const HeroBanner = () => {
           <button
             className="flex items-center gap-2"
             style={{
-              background: '#0070d1',
-              color: 'white',
-              border: 'none',
-              borderRadius: '10px',
-              padding: '12px 28px',
-              fontSize: '15px',
+              background: "#0070d1",
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              padding: "12px 28px",
+              fontSize: "15px",
               fontWeight: 600,
-              cursor: 'pointer',
-              userSelect: 'none',
-              transition: 'all 200ms ease'
+              cursor: "pointer",
+              userSelect: "none",
+              transition: "all 200ms ease",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#0088ff';
-              e.currentTarget.style.transform = 'scale(1.02)';
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 112, 209, 0.5)';
+              e.currentTarget.style.background = "#0088ff";
+              e.currentTarget.style.transform = "scale(1.02)";
+              e.currentTarget.style.boxShadow =
+                "0 0 20px rgba(0, 112, 209, 0.5)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#0070d1';
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = 'none';
+              e.currentTarget.style.background = "#0070d1";
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "none";
             }}
           >
             <Play size={16} fill="white" />
             Play Now
           </button>
-          
+
           <button
             style={{
-              background: 'transparent',
-              color: 'white',
-              border: '1.5px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '10px',
-              padding: '12px 28px',
-              fontSize: '15px',
+              background: "transparent",
+              color: "white",
+              border: "1.5px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "10px",
+              padding: "12px 28px",
+              fontSize: "15px",
               fontWeight: 600,
-              cursor: 'pointer',
-              userSelect: 'none',
-              transition: 'all 200ms ease'
+              cursor: "pointer",
+              userSelect: "none",
+              transition: "all 200ms ease",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.6)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
             }}
           >
             Add to Library
