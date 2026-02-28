@@ -1,19 +1,23 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Home, ShoppingBag, Users, User } from "lucide-react";
 import { userProfile } from "../data/mockData.js";
 
 const Sidebar = ({ activeNav = "Home", onNavChange }) => {
+  const navigate = useNavigate();
+  
   const navItems = [
-    { icon: Home, label: "Home" },
-    { icon: ShoppingBag, label: "Store" },
-    { icon: Users, label: "Social" },
-    { icon: User, label: "Profile" },
+    { icon: Home, label: "Home", path: "/home" },
+    { icon: ShoppingBag, label: "Store", path: "/store" },
+    { icon: Users, label: "Social", path: "/home" },
+    { icon: User, label: "Profile", path: "/home" },
   ];
 
-  const handleNavClick = (label) => {
+  const handleNavClick = (label, path) => {
     if (onNavChange) {
       onNavChange(label);
     }
+    navigate(path);
   };
 
   const progressPercent =
@@ -55,7 +59,7 @@ const Sidebar = ({ activeNav = "Home", onNavChange }) => {
           return (
             <div
               key={item.label}
-              onClick={() => handleNavClick(item.label)}
+              onClick={() => handleNavClick(item.label, item.path)}
               className="flex items-center gap-3 h-12 px-4 cursor-pointer"
               style={{
                 borderRadius: "10px",
