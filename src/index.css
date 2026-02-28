@@ -1,1 +1,48 @@
 @import "tailwindcss";
+
+/* PlayStation Theme CSS Variables */
+:root {
+  /* Background Colors */
+  --ps-black: #0a0e1a;
+  --ps-surface: #141824;
+  --ps-surface2: #1e2433;
+  --ps-border: #1e2d45;
+
+  /* Accent Colors */
+  --ps-blue: #0070d1;
+  --ps-cyan: #00d4ff;
+  --ps-green: #00e676;
+  --ps-gold: #f5a623;
+
+  /* Text Colors */
+  --ps-text-primary: #ffffff;
+  --ps-text-secondary: #8a9bb5;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ps-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ps-blue);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0088ff;
+}
+
+/* Global Styles */
+body {
+  background: var(--ps-black);
+  color: var(--ps-text-primary);
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+}

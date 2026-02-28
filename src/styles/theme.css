@@ -1,0 +1,17 @@
+:root {
+  --ps-bg-primary: #0b0f1a;
+  --ps-bg-secondary: #111827;
+  --ps-bg-card: #161b2e;
+
+  --ps-blue: #1f6fff;
+  --ps-blue-glow: #3b82f6;
+  --ps-accent: #00d4ff;
+
+  --ps-text-primary: #ffffff;
+  --ps-text-secondary: #9ca3af;
+
+  --ps-border: rgba(255, 255, 255, 0.08);
+
+  --ps-glow-strong: 0 0 20px rgba(31, 111, 255, 0.6);
+  --ps-glow-soft: 0 0 12px rgba(31, 111, 255, 0.4);
+}

@@ -1,17 +1,18 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import PSStoreUI from './Components/StoreUI'
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import PSStoreUI from "./Components/StoreUI";
+import Home from "./pages/Home";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <PSStoreUI />
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/store" element={<PSStoreUI />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
