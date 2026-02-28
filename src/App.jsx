@@ -123,13 +123,73 @@ function HomePage() {
   );
 }
 
+function StorePage() {
+  const [activeNav, setActiveNav] = useState("Store");
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#0a0e1a",
+        display: "flex",
+        position: "relative",
+      }}
+    >
+      {/* Noise/grain texture overlay */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 999,
+          pointerEvents: "none",
+          backgroundImage:
+            "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.03'/></svg>\")",
+          opacity: 0.4,
+          mixBlendMode: "overlay",
+        }}
+      />
+      <div
+        style={{
+          animation: "psSlideIn 300ms ease-out",
+        }}
+      >
+        <Sidebar activeNav={activeNav} onNavChange={setActiveNav} />
+      </div>
+
+      <div
+        style={{
+          flex: 1,
+          marginLeft: "240px",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Navbar />
+
+        <main
+          style={{
+            marginTop: "56px",
+            overflowY: "auto",
+            height: "calc(100vh - 56px)",
+          }}
+        >
+          <PSStoreUI />
+        </main>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/store" element={<PSStoreUI />} />
+        <Route path="/store" element={<StorePage />} />
       </Routes>
     </Router>
   );
