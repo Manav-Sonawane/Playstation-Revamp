@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import Sidebar from '../Components/Sidebar';
-import Navbar from '../Components/Navbar';
+import React, { useState } from "react";
+import Sidebar from "../Components/Sidebar";
+import Navbar from "../Components/Navbar";
 
 const Home = () => {
-  const [activeNav, setActiveNav] = useState('Home');
+  const [activeNav, setActiveNav] = useState("Home");
 
   return (
     <div className="min-h-screen">
       <Sidebar activeNav={activeNav} onNavChange={setActiveNav} />
       <Navbar />
-      
+
       {/* Main content area */}
-      <main 
+      <main
         className="pt-[56px] pl-[240px]"
         style={{
-          minHeight: '100vh'
+          minHeight: "100vh",
         }}
       >
         <div className="p-8">

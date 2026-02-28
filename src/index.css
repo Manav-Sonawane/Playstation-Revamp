@@ -21,18 +21,18 @@
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--ps-border);
-  border-radius: 4px;
+  background: #0a0e1a;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--ps-blue);
-  border-radius: 4px;
+  background: #0070d1;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -45,4 +45,20 @@ body {
   color: var(--ps-text-primary);
   font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   margin: 0;
+}
+
+/* PlayStation Animations */
+@keyframes psPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+@keyframes psSlideIn {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes psFadeUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
