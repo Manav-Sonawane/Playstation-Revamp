@@ -2,58 +2,99 @@
 
 /* PlayStation Theme CSS Variables */
 :root {
-  /* Background Colors */
   --ps-black: #0a0e1a;
   --ps-surface: #141824;
   --ps-surface2: #1e2433;
   --ps-border: #1e2d45;
-
-  /* Accent Colors */
   --ps-blue: #0070d1;
   --ps-cyan: #00d4ff;
   --ps-green: #00e676;
   --ps-gold: #f5a623;
-
-  /* Text Colors */
   --ps-text-primary: #ffffff;
   --ps-text-secondary: #8a9bb5;
+
+  /* Glass morphism tokens */
+  --glass-bg: rgba(14, 18, 32, 0.65);
+  --glass-bg-light: rgba(20, 26, 48, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(0, 112, 209, 0.4);
+  --glass-blur: blur(16px);
+  --glass-blur-heavy: blur(24px);
 }
 
-/* Custom Scrollbar */
+/* ── Global Reset & Body ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--ps-black);
+  color: var(--ps-text-primary);
+  font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  cursor: none;
+}
+
+*,
+*::before,
+*::after {
+  cursor: none !important;
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── Glassmorphism Utility Classes ── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-light {
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-heavy {
+  background: rgba(10, 14, 26, 0.8);
+  backdrop-filter: var(--glass-blur-heavy);
+  -webkit-backdrop-filter: var(--glass-blur-heavy);
+  border: 1px solid var(--glass-border);
+}
+
+/* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0e1a;
-  border-radius: 3px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0070d1;
+  background: rgba(0, 112, 209, 0.4);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0088ff;
+  background: #0070d1;
 }
 
-/* Global Styles */
-body {
-  background: var(--ps-black);
-  color: var(--ps-text-primary);
-  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  margin: 0;
-}
-
-/* PlayStation Animations */
+/* ── Animations ── */
 @keyframes psPulse {
+
   0%,
   100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.5);
     opacity: 0.5;
@@ -65,6 +106,7 @@ body {
     transform: translateX(-100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -76,8 +118,70 @@ body {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes progressDraw {
+  from {
+    stroke-dashoffset: 220;
+  }
+}
+
+/* ── Focus remove outline ── */
+button:focus {
+  outline: none;
+}
+
+input:focus {
+  outline: none;
+}
+
+/*
+  Logo background removal.
+  COD and Kena logos have pure-black backgrounds.
+  mix-blend-mode:screen on a black-bg wrapper makes the black
+  pixels mathematically disappear (screen: result = 1-(1-a)(1-b), so black=0 → result=underlying).
+  The wrapper itself must NOT be inside an isolated stacking context
+  (transforms, filters, overflow:hidden on ancestors break it).
+  We handle this by placing the blend wrapper as a direct child of the
+  positioned overlay div instead of inside filtered containers.
+*/
+.logo-blend-wrapper {
+  display: inline-flex;
+  background: #000000;
+  mix-blend-mode: screen;
+  border-radius: 4px;
+  /* Do NOT add filter, transform, or overflow here — it breaks blending */
+}
+
+/* Moving Out logo is already transparent — just show it normally */
+.logo-transparent {
+  display: inline-flex;
+  background: transparent;
 }

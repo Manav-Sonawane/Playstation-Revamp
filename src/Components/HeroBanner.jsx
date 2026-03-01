@@ -1,244 +1,494 @@
-import React, { useState, useEffect } from "react";
-import { Sparkles, Star, Play } from "lucide-react";
-import { heroGame } from "../data/mockData.js";
-
-// Pre-generated star positions to avoid Math.random() during render
-const STAR_POSITIONS = [
-  { x: 12, y: 15, size: 1.2, opacity: 0.5 },
-  { x: 25, y: 8, size: 1.8, opacity: 0.6 },
-  { x: 38, y: 22, size: 1.5, opacity: 0.4 },
-  { x: 45, y: 12, size: 2.1, opacity: 0.7 },
-  { x: 52, y: 28, size: 1.3, opacity: 0.5 },
-  { x: 61, y: 18, size: 1.9, opacity: 0.6 },
-  { x: 68, y: 35, size: 1.4, opacity: 0.4 },
-  { x: 75, y: 10, size: 2.3, opacity: 0.8 },
-  { x: 82, y: 25, size: 1.6, opacity: 0.5 },
-  { x: 88, y: 15, size: 1.7, opacity: 0.6 },
-  { x: 15, y: 45, size: 1.4, opacity: 0.5 },
-  { x: 28, y: 52, size: 2.0, opacity: 0.7 },
-  { x: 35, y: 48, size: 1.5, opacity: 0.4 },
-  { x: 42, y: 58, size: 1.8, opacity: 0.6 },
-  { x: 55, y: 50, size: 1.3, opacity: 0.5 },
-  { x: 65, y: 62, size: 2.2, opacity: 0.7 },
-  { x: 72, y: 55, size: 1.6, opacity: 0.5 },
-  { x: 85, y: 48, size: 1.9, opacity: 0.6 },
-  { x: 92, y: 58, size: 1.4, opacity: 0.4 },
-  { x: 8, y: 32, size: 1.7, opacity: 0.5 },
-  { x: 18, y: 68, size: 1.5, opacity: 0.6 },
-  { x: 32, y: 75, size: 2.1, opacity: 0.7 },
-  { x: 48, y: 72, size: 1.3, opacity: 0.4 },
-  { x: 58, y: 82, size: 1.8, opacity: 0.6 },
-  { x: 70, y: 78, size: 1.6, opacity: 0.5 },
-  { x: 78, y: 85, size: 2.0, opacity: 0.7 },
-  { x: 88, y: 75, size: 1.4, opacity: 0.5 },
-  { x: 5, y: 62, size: 1.9, opacity: 0.6 },
-  { x: 95, y: 38, size: 1.5, opacity: 0.5 },
-  { x: 50, y: 5, size: 2.2, opacity: 0.7 },
-];
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Star, Play, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { featuredGames } from "../data/mockData.js";
+import LogoImage from "./LogoImage.jsx";
 
 const HeroBanner = () => {
-  const [visible, setVisible] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [contentVisible, setContentVisible] = useState(false);
+  const activeIndexRef = useRef(0); // keep ref in sync for interval closure
+  const isTransitioningRef = useRef(false);
+  const timeoutRef = useRef(null);
+  const intervalRef = useRef(null);
 
+  const activeGame = featuredGames[activeIndex];
+
+  // Animate content in on mount
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisible(true);
-    }, 50);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setContentVisible(true), 100);
+    return () => clearTimeout(t);
   }, []);
+
+  const switchGame = useCallback((index) => {
+    if (index === activeIndexRef.current || isTransitioningRef.current) return;
+
+    isTransitioningRef.current = true;
+    setContentVisible(false);
+
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      activeIndexRef.current = index;
+      setActiveIndex(index);
+      isTransitioningRef.current = false;
+      setTimeout(() => setContentVisible(true), 80);
+    }, 550);
+  }, []);
+
+  const goNext = useCallback(() => {
+    const next = (activeIndexRef.current + 1) % featuredGames.length;
+    switchGame(next);
+  }, [switchGame]);
+
+  const goPrev = useCallback(() => {
+    const prev =
+      (activeIndexRef.current - 1 + featuredGames.length) %
+      featuredGames.length;
+    switchGame(prev);
+  }, [switchGame]);
+
+  // Auto-rotate — stable interval, no deps needed since we use refs
+  useEffect(() => {
+    intervalRef.current = setInterval(goNext, 6000);
+    return () => {
+      clearInterval(intervalRef.current);
+      clearTimeout(timeoutRef.current);
+    };
+  }, [goNext]);
 
   return (
     <section
-      className="relative w-full overflow-hidden"
       style={{
-        height: "320px",
-        background: heroGame.gradient,
+        position: "relative",
+        width: "100%",
+        height: "380px",
+        overflow: "hidden",
       }}
     >
-      {/* Blue ambient glow */}
+      {/* ── Background Poster Layers (crossfade) ── */}
+      {featuredGames.map((game, i) => (
+        <div
+          key={game.id}
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url(${game.poster})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center top",
+            opacity: i === activeIndex ? 1 : 0,
+            transition: "opacity 700ms cubic-bezier(0.4, 0, 0.2, 1)",
+            zIndex: 0,
+          }}
+        />
+      ))}
+
+      {/* ── Dark directional gradient overlay ── */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: activeGame.overlayGradient,
+          zIndex: 1,
+          transition: "background 700ms ease",
+        }}
+      />
+
+      {/* ── Bottom fade into page background ── */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "150px",
+          background: "linear-gradient(to bottom, transparent, #0a0e1a)",
+          zIndex: 2,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* ── Accent colour glow (top-left) ── */}
       <div
         style={{
           position: "absolute",
           top: 0,
           left: 0,
-          width: "600px",
-          height: "400px",
-          background:
-            "radial-gradient(circle, rgba(0,112,209,0.15) 0%, transparent 70%)",
-          pointerEvents: "none",
+          width: "500px",
+          height: "380px",
+          background: `radial-gradient(circle at 15% 50%, ${activeGame.accentColor}25 0%, transparent 65%)`,
           zIndex: 1,
+          transition: "background 700ms ease",
+          pointerEvents: "none",
         }}
       />
 
-      {/* Star field effect */}
-      <div className="absolute inset-0 z-0">
-        {STAR_POSITIONS.map((star, i) => (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: `${star.x}%`,
-              top: `${star.y}%`,
-              width: `${star.size}px`,
-              height: `${star.size}px`,
-              background: "white",
-              borderRadius: "50%",
-              opacity: star.opacity,
-              boxShadow: `0 0 ${star.size * 2}px rgba(255, 255, 255, ${star.opacity})`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Bottom fade */}
+      {/* ── Content (left side) ── */}
       <div
-        className="absolute bottom-0 left-0 right-0"
         style={{
-          height: "120px",
-          background: "linear-gradient(to bottom, transparent, #0a0e1a)",
-          zIndex: 2,
-        }}
-      />
-
-      {/* Content */}
-      <div
-        className="absolute"
-        style={{
-          bottom: "24px",
-          left: "32px",
-          zIndex: 3,
-          maxWidth: "640px",
-          opacity: visible ? 1 : 0,
-          transform: visible ? "translateY(0)" : "translateY(20px)",
-          transition: "opacity 500ms ease 100ms, transform 500ms ease 100ms",
+          position: "absolute",
+          bottom: "34px",
+          left: "36px",
+          zIndex: 4,
+          maxWidth: "520px",
+          opacity: contentVisible ? 1 : 0,
+          transform: contentVisible ? "translateY(0)" : "translateY(20px)",
+          transition: "opacity 450ms ease, transform 450ms ease",
         }}
       >
-        {/* Badge row */}
-        <div className="flex items-center gap-[10px] mb-4">
-          <div className="flex items-center gap-1">
-            <Sparkles size={14} style={{ color: "#0070d1" }} />
-            <span
-              style={{
-                fontSize: "11px",
-                fontWeight: 600,
-                color: "#0070d1",
-                letterSpacing: "1.5px",
-              }}
-            >
-              AI RECOMMENDED
-            </span>
-          </div>
-          <div
+        {/* Game Logo — canvas strips dark background */}
+        <div style={{ marginBottom: "12px", minHeight: "72px", display: "flex", alignItems: "flex-end" }}>
+          <LogoImage
+            src={activeGame.logo}
+            alt={activeGame.title}
             style={{
-              background: "#00e676",
-              color: "#000",
-              fontSize: "11px",
-              fontWeight: 700,
-              padding: "3px 10px",
-              borderRadius: "20px",
+              maxHeight: "72px",
+              maxWidth: "280px",
+              objectFit: "contain",
+              objectPosition: "left bottom",
+              display: "block",
             }}
-          >
-            {heroGame.matchPercent}% Match
-          </div>
+          />
         </div>
 
-        {/* Title */}
-        <h1
+        {/* Rating · Genre · Players · Match */}
+        <div
           style={{
-            fontSize: "58px",
-            fontWeight: 800,
-            color: "white",
-            lineHeight: 1.05,
-            letterSpacing: "-1.5px",
-            marginBottom: "12px",
-            textShadow: "0 2px 20px rgba(0, 112, 209, 0.3)",
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "0",
+            marginBottom: "10px",
           }}
         >
-          {heroGame.title}
-        </h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+            <Star size={13} style={{ color: "#f5a623", fill: "#f5a623" }} />
+            <span style={{ color: "white", fontWeight: 700, fontSize: "13px" }}>
+              {activeGame.rating}
+            </span>
+          </div>
+          <span style={{ color: "#4a6080", margin: "0 8px" }}>•</span>
+          <span style={{ color: "#b0c4d8", fontSize: "13px" }}>
+            {activeGame.genre}
+          </span>
+          <span style={{ color: "#4a6080", margin: "0 8px" }}>•</span>
+          <span style={{ color: "#b0c4d8", fontSize: "13px" }}>
+            {activeGame.players}
+          </span>
+          <span
+            style={{
+              marginLeft: "12px",
+              background: "rgba(0,230,118,0.15)",
+              color: "#00e676",
+              border: "1px solid rgba(0,230,118,0.3)",
+              fontSize: "10px",
+              fontWeight: 700,
+              padding: "2px 9px",
+              borderRadius: "20px",
+              letterSpacing: "0.3px",
+            }}
+          >
+            {activeGame.matchPercent}% Match
+          </span>
+        </div>
 
         {/* Description */}
         <p
           style={{
-            fontSize: "15px",
-            color: "#a0b4cc",
-            lineHeight: 1.6,
-            marginBottom: "20px",
+            fontSize: "13px",
+            color: "#8aa4bf",
+            lineHeight: 1.7,
+            marginBottom: "22px",
+            maxWidth: "460px",
           }}
         >
-          {heroGame.description}
+          {activeGame.description}
         </p>
 
-        {/* Metadata row */}
-        <div className="flex items-center gap-0 mb-7">
-          <div className="flex items-center gap-1">
-            <Star size={16} style={{ color: "#f5a623", fill: "#f5a623" }} />
-            <span style={{ color: "white", fontWeight: 600 }}>
-              {heroGame.rating}/5
-            </span>
-          </div>
-          <span style={{ color: "#8a9bb5", margin: "0 10px" }}>•</span>
-          <span style={{ color: "#8a9bb5" }}>{heroGame.genre}</span>
-          <span style={{ color: "#8a9bb5", margin: "0 10px" }}>•</span>
-          <span style={{ color: "#8a9bb5" }}>{heroGame.players}</span>
-        </div>
-
-        {/* Buttons row */}
-        <div className="flex gap-3">
+        {/* CTA Buttons */}
+        <div style={{ display: "flex", gap: "12px" }}>
           <button
-            className="flex items-center gap-2"
             style={{
-              background: "#0070d1",
-              color: "white",
+              display: "flex",
+              alignItems: "center",
+              gap: "7px",
+              background: activeGame.accentColor,
+              color: "#fff",
               border: "none",
               borderRadius: "10px",
-              padding: "12px 28px",
-              fontSize: "15px",
-              fontWeight: 600,
+              padding: "11px 26px",
+              fontSize: "14px",
+              fontWeight: 700,
               cursor: "pointer",
-              userSelect: "none",
-              transition: "all 200ms ease",
+              transition: "filter 200ms ease, transform 200ms ease",
+              boxShadow: `0 4px 22px ${activeGame.accentColor}55`,
+              letterSpacing: "0.3px",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#0088ff";
-              e.currentTarget.style.transform = "scale(1.02)";
-              e.currentTarget.style.boxShadow =
-                "0 0 20px rgba(0, 112, 209, 0.5)";
+              e.currentTarget.style.filter = "brightness(1.18)";
+              e.currentTarget.style.transform = "scale(1.03)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#0070d1";
+              e.currentTarget.style.filter = "brightness(1)";
               e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none";
             }}
           >
-            <Play size={16} fill="white" />
+            <Play size={15} fill="white" />
             Play Now
           </button>
 
           <button
             style={{
-              background: "transparent",
+              display: "flex",
+              alignItems: "center",
+              gap: "7px",
+              background: "rgba(255,255,255,0.07)",
               color: "white",
-              border: "1.5px solid rgba(255, 255, 255, 0.3)",
+              border: "1.5px solid rgba(255,255,255,0.2)",
               borderRadius: "10px",
-              padding: "12px 28px",
-              fontSize: "15px",
+              padding: "11px 26px",
+              fontSize: "14px",
               fontWeight: 600,
               cursor: "pointer",
-              userSelect: "none",
               transition: "all 200ms ease",
+              backdropFilter: "blur(8px)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.6)";
+              e.currentTarget.style.background = "rgba(255,255,255,0.13)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.45)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
+              e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
             }}
           >
+            <Plus size={15} />
             Add to Library
           </button>
         </div>
+      </div>
+
+      {/* ── Game Selector Thumbnail Cards (bottom-right) ── */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "28px",
+          right: "28px",
+          display: "flex",
+          gap: "10px",
+          zIndex: 4,
+        }}
+      >
+        {featuredGames.map((game, i) => {
+          const isActive = i === activeIndex;
+          return (
+            <button
+              key={game.id}
+              onClick={() => switchGame(i)}
+              style={{
+                width: "94px",
+                height: "62px",
+                borderRadius: "9px",
+                overflow: "hidden",
+                border: isActive
+                  ? `2.5px solid ${game.accentColor}`
+                  : "2.5px solid rgba(255,255,255,0.18)",
+                cursor: "pointer",
+                position: "relative",
+                transition: "all 250ms ease",
+                transform: isActive ? "scale(1.08)" : "scale(1)",
+                boxShadow: isActive
+                  ? `0 0 18px ${game.accentColor}55`
+                  : "0 2px 10px rgba(0,0,0,0.5)",
+                padding: 0,
+                background: "#0a0e1a",
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)";
+                  e.currentTarget.style.transform = "scale(1)";
+                }
+              }}
+            >
+              {/* Mini poster */}
+              <img
+                src={game.poster}
+                alt={game.title}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  display: "block",
+                }}
+              />
+              {/* Dimming overlay */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: isActive
+                    ? "rgba(0,0,0,0.15)"
+                    : "rgba(0,0,0,0.52)",
+                  transition: "background 250ms ease",
+                  zIndex: 1,
+                }}
+              />
+              {/* Game name label (fallback since logos may be complex) */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "5px",
+                  left: 0,
+                  right: 0,
+                  textAlign: "center",
+                  zIndex: 2,
+                  fontSize: "8px",
+                  fontWeight: 700,
+                  color: "rgba(255,255,255,0.9)",
+                  letterSpacing: "0.5px",
+                  textTransform: "uppercase",
+                  textShadow: "0 1px 4px rgba(0,0,0,1)",
+                  padding: "0 4px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {game.title}
+              </div>
+              {/* Active indicator bar */}
+              {isActive && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: "3px",
+                    background: game.accentColor,
+                    zIndex: 3,
+                  }}
+                />
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Prev Arrow ── */}
+      <button
+        onClick={goPrev}
+        style={{
+          position: "absolute",
+          left: "14px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 5,
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          background: "rgba(0,0,0,0.5)",
+          border: "1px solid rgba(255,255,255,0.2)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "all 200ms ease",
+          backdropFilter: "blur(8px)",
+          color: "white",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(0,0,0,0.8)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.5)";
+          e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(0,0,0,0.5)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
+          e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+        }}
+      >
+        <ChevronLeft size={20} color="white" />
+      </button>
+
+      {/* ── Next Arrow ── */}
+      <button
+        onClick={goNext}
+        style={{
+          position: "absolute",
+          right: "14px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 5,
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          background: "rgba(0,0,0,0.5)",
+          border: "1px solid rgba(255,255,255,0.2)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "all 200ms ease",
+          backdropFilter: "blur(8px)",
+          color: "white",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(0,0,0,0.8)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.5)";
+          e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(0,0,0,0.5)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
+          e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+        }}
+      >
+        <ChevronRight size={20} color="white" />
+      </button>
+
+      {/* ── Progress Dots ── */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "10px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: "6px",
+          zIndex: 4,
+        }}
+      >
+        {featuredGames.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => switchGame(i)}
+            style={{
+              width: i === activeIndex ? "24px" : "7px",
+              height: "7px",
+              borderRadius: "4px",
+              background:
+                i === activeIndex
+                  ? activeGame.accentColor
+                  : "rgba(255,255,255,0.28)",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+              transition: "all 400ms cubic-bezier(0.4, 0, 0.2, 1)",
+              boxShadow:
+                i === activeIndex
+                  ? `0 0 8px ${activeGame.accentColor}`
+                  : "none",
+            }}
+          />
+        ))}
       </div>
     </section>
   );

@@ -1,273 +1,198 @@
 import React from "react";
-import { Users, TrendingUp, Star } from "lucide-react";
-import { onlineFriends, recentAchievements } from "../data/mockData.js";
+import { Users } from "lucide-react";
+import { onlineFriends } from "../data/mockData.js";
+
+const avatarColors = [
+  "linear-gradient(135deg, #3a4a6b, #1e2d45)",
+  "linear-gradient(135deg, #2a4a3a, #1a3028)",
+  "linear-gradient(135deg, #4a3a6b, #2d1e45)",
+  "linear-gradient(135deg, #4a3a2a, #3a2a1a)",
+];
 
 const FriendsPanel = () => {
-  const getInitials = (username) => {
-    return username.substring(0, 2).toUpperCase();
-  };
-
-  const onlineCount = onlineFriends.length;
+  const getInitials = (username) => username.substring(0, 1).toUpperCase();
+  const onlineCount = onlineFriends.filter(
+    (f) => f.status === "online" || f.status === "in-game"
+  ).length;
 
   return (
     <div
       style={{
-        width: "280px",
-        flexShrink: 0,
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px",
+        background: "rgba(10, 14, 26, 0.72)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderRadius: "18px",
+        border: "1px solid rgba(255,255,255,0.08)",
+        padding: "20px",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
       }}
     >
-      {/* FRIENDS ONLINE CARD */}
+      {/* Header */}
       <div
         style={{
-          background: "#141824",
-          borderRadius: "14px",
-          padding: "20px",
-          border: "1px solid #1e2d45",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "18px",
         }}
       >
-        {/* Header */}
-        <div
-          className="flex items-center justify-between"
-          style={{ marginBottom: "16px" }}
-        >
-          {/* Left */}
-          <div className="flex items-center" style={{ gap: "8px" }}>
-            <Users size={18} style={{ color: "#0070d1" }} />
-            <h3
-              style={{
-                color: "white",
-                fontWeight: 700,
-                fontSize: "18px",
-                letterSpacing: "-0.3px",
-              }}
-            >
-              Friends Online
-            </h3>
-          </div>
-
-          {/* Right */}
-          <div
-            style={{
-              background: "rgba(0, 230, 118, 0.12)",
-              color: "#00e676",
-              fontSize: "11px",
-              fontWeight: 600,
-              padding: "2px 8px",
-              borderRadius: "20px",
-            }}
-          >
-            {onlineCount} online
-          </div>
-        </div>
-
-        {/* Friends list */}
-        <div
+        <h3
           style={{
+            fontSize: "17px",
+            fontWeight: 700,
+            color: "#ffffff",
+            letterSpacing: "-0.3px",
             display: "flex",
-            flexDirection: "column",
-            gap: "12px",
+            alignItems: "center",
+            gap: "8px",
           }}
         >
-          {onlineFriends.map((friend) => (
-            <div
-              key={friend.id}
-              className="flex items-center gap-[10px]"
-              style={{
-                cursor: "pointer",
-                userSelect: "none",
-                padding: "4px",
-                borderRadius: "8px",
-                transition: "all 200ms ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(0, 112, 209, 0.08)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "transparent";
-              }}
-            >
-              {/* Avatar */}
-              <div
-                className="relative flex items-center justify-center"
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  background: "linear-gradient(135deg, #1e2d45, #0d1830)",
-                  borderRadius: "50%",
-                  color: "#8a9bb5",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                }}
-              >
-                {getInitials(friend.username)}
-
-                {/* Status dot */}
-                <div
-                  className="absolute"
-                  style={{
-                    bottom: 0,
-                    right: 0,
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    border: "2px solid #141824",
-                    background:
-                      friend.status === "in-game" ? "#0070d1" : "#00e676",
-                  }}
-                />
-              </div>
-
-              {/* Info column */}
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    color: "white",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {friend.username}
-                </div>
-                <div
-                  style={{
-                    color: "#8a9bb5",
-                    fontSize: "11px",
-                  }}
-                >
-                  {friend.currentGame || "Online"}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* View All Friends button */}
-        <button
+          <Users size={17} style={{ color: "#0070d1" }} />
+          Friends
+        </h3>
+        <div
           style={{
-            marginTop: "12px",
-            width: "100%",
-            padding: "8px",
-            background: "transparent",
-            border: "1px solid #1e2d45",
-            borderRadius: "8px",
-            color: "#0070d1",
-            fontSize: "13px",
-            cursor: "pointer",
-            userSelect: "none",
-            transition: "background 150ms ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "#1e2d45";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "transparent";
+            background: "rgba(0,230,118,0.12)",
+            border: "1px solid rgba(0,230,118,0.25)",
+            color: "#00e676",
+            fontSize: "11px",
+            fontWeight: 700,
+            padding: "3px 10px",
+            borderRadius: "20px",
+            letterSpacing: "0.3px",
           }}
         >
-          View All Friends
-        </button>
+          {onlineCount} Online
+        </div>
       </div>
 
-      {/* RECENT ACHIEVEMENTS CARD */}
-      <div
-        style={{
-          background: "#141824",
-          borderRadius: "14px",
-          padding: "20px",
-          border: "1px solid #1e2d45",
-        }}
-      >
-        {/* Header */}
-        <div className="flex items-center" style={{ gap: "8px" }}>
-          <TrendingUp size={18} style={{ color: "#0070d1" }} />
-          <h3
+      {/* Friends list */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+        {onlineFriends.map((friend, idx) => (
+          <div
+            key={friend.id}
             style={{
-              color: "white",
-              fontWeight: 700,
-              fontSize: "18px",
-              letterSpacing: "-0.3px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              padding: "10px 10px",
+              borderRadius: "12px",
+              cursor: "pointer",
+              transition: "all 180ms ease",
+              userSelect: "none",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(0,112,209,0.08)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
             }}
           >
-            Recent Achievements
-          </h3>
-        </div>
-
-        {/* Achievements list */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-            marginTop: "16px",
-          }}
-        >
-          {recentAchievements.map((achievement) => (
-            <div
-              key={achievement.id}
-              className="flex items-center gap-3"
-              style={{
-                cursor: "pointer",
-                userSelect: "none",
-                padding: "4px",
-                borderRadius: "8px",
-                transition: "all 200ms ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(245, 166, 35, 0.08)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "transparent";
-              }}
-            >
-              {/* Icon box */}
+            {/* Avatar circle with initial */}
+            <div style={{ position: "relative", flexShrink: 0 }}>
               <div
-                className="flex items-center justify-center"
                 style={{
                   width: "40px",
                   height: "40px",
-                  background: "linear-gradient(135deg, #f5a623, #e8920f)",
-                  borderRadius: "10px",
+                  borderRadius: "50%",
+                  background: avatarColors[idx % avatarColors.length],
+                  border: "1.5px solid rgba(255,255,255,0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "15px",
+                  fontWeight: 700,
+                  color: "rgba(255,255,255,0.85)",
+                  letterSpacing: "0",
                 }}
               >
-                <Star size={18} style={{ color: "white", fill: "white" }} />
+                {getInitials(friend.username)}
               </div>
+              {/* Status dot */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "1px",
+                  right: "1px",
+                  width: "11px",
+                  height: "11px",
+                  borderRadius: "50%",
+                  background:
+                    friend.status === "in-game"
+                      ? "#0070d1"
+                      : "#00e676",
+                  border: "2px solid rgba(10,14,26,0.9)",
+                  boxShadow:
+                    friend.status === "in-game"
+                      ? "0 0 6px rgba(0,112,209,0.7)"
+                      : "0 0 6px rgba(0,230,118,0.7)",
+                }}
+              />
+            </div>
 
-              {/* Info */}
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    color: "white",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {achievement.name}
-                </div>
-                <div
-                  style={{
-                    color: "#f5a623",
-                    fontSize: "11px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {achievement.xp} XP
-                </div>
-                <div
-                  style={{
-                    color: "#8a9bb5",
-                    fontSize: "11px",
-                    marginTop: "1px",
-                  }}
-                >
-                  {achievement.unlockedDate}
-                </div>
+            {/* Name + subtitle */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  color: "#ffffff",
+                  marginBottom: "2px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {friend.username}
+              </div>
+              <div
+                style={{
+                  fontSize: "11px",
+                  color:
+                    friend.currentGame
+                      ? "#8a9bb5"
+                      : "#00e676",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  fontWeight: friend.currentGame ? 400 : 500,
+                }}
+              >
+                {friend.currentGame || "Online"}
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
+
+      {/* View all */}
+      <button
+        style={{
+          marginTop: "12px",
+          width: "100%",
+          padding: "9px",
+          background: "rgba(0,112,209,0.08)",
+          border: "1px solid rgba(0,112,209,0.2)",
+          borderRadius: "10px",
+          color: "#0070d1",
+          fontSize: "12px",
+          fontWeight: 600,
+          cursor: "pointer",
+          transition: "all 180ms ease",
+          backdropFilter: "blur(8px)",
+          letterSpacing: "0.3px",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(0,112,209,0.18)";
+          e.currentTarget.style.borderColor = "rgba(0,112,209,0.5)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(0,112,209,0.08)";
+          e.currentTarget.style.borderColor = "rgba(0,112,209,0.2)";
+        }}
+      >
+        View All Friends
+      </button>
     </div>
   );
 };

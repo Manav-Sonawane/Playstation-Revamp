@@ -1,22 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Home,
-  ShoppingBag,
-  Users,
-  User,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import { userProfile } from "../data/mockData.js";
+import { Home, ShoppingBag, Users, User } from "lucide-react";
 import PSLogo from "./PSLogo.jsx";
 
-const Sidebar = ({
-  activeNav = "Home",
-  onNavChange,
-  isCollapsed,
-  onToggleCollapse,
-}) => {
+/* Sidebar — always collapsed (icon-only, no expand toggle) */
+const Sidebar = ({ activeNav = "Home", onNavChange }) => {
   const navigate = useNavigate();
 
   const navItems = [
@@ -27,104 +15,72 @@ const Sidebar = ({
   ];
 
   const handleNavClick = (label, path) => {
-    if (onNavChange) {
-      onNavChange(label);
-    }
+    if (onNavChange) onNavChange(label);
     navigate(path);
   };
 
-  const progressPercent =
-    (userProfile.currentXP / userProfile.nextLevelXP) * 100;
-
   return (
     <aside
-      className="fixed left-0 top-0 h-screen bg-[#0d1117] flex flex-col"
       style={{
-        width: isCollapsed ? "72px" : "240px",
-        borderRight: "1px solid #1e2d45",
-        boxShadow: "2px 0 8px rgba(0, 112, 209, 0.15)",
-        transition: "width 300ms ease",
+        position: "fixed",
+        left: 0,
+        top: 0,
+        height: "100vh",
+        width: "72px",          /* always collapsed */
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        background: "rgba(8, 11, 22, 0.85)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+        borderRight: "1px solid rgba(255,255,255,0.07)",
+        boxShadow: "4px 0 32px rgba(0, 0, 0, 0.4), 2px 0 0 rgba(0,112,209,0.06)",
         zIndex: 200,
       }}
     >
-      {/* TOP SECTION - Logo */}
+      {/* PS Logo */}
       <div
-        className="flex items-center gap-[10px] p-5"
         style={{
-          borderBottom: "1px solid #1e2d45",
-          justifyContent: isCollapsed ? "center" : "flex-start",
-        }}
-      >
-        <PSLogo size={isCollapsed ? 32 : 40} />
-        {!isCollapsed && (
-          <span className="text-white font-bold text-[18px]">PlayStation</span>
-        )}
-      </div>
-
-      {/* Toggle Button - Positioned on sidebar edge */}
-      <button
-        onClick={onToggleCollapse}
-        style={{
-          position: "fixed",
-          left: isCollapsed ? "56px" : "224px",
-          top: "50%",
-          transform: "translateY(-50%)",
-          width: "32px",
-          height: "32px",
-          borderRadius: "50%",
-          background: "#141824",
-          border: "2px solid #1e2d45",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          cursor: "pointer",
-          transition: "all 300ms ease",
-          zIndex: 250,
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = "#0070d1";
-          e.currentTarget.style.borderColor = "#0070d1";
-          e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = "#141824";
-          e.currentTarget.style.borderColor = "#1e2d45";
-          e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+          padding: "20px 0",
+          width: "100%",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        {isCollapsed ? (
-          <ChevronRight size={18} style={{ color: "#ffffff" }} />
-        ) : (
-          <ChevronLeft size={18} style={{ color: "#ffffff" }} />
-        )}
-      </button>
+        <PSLogo size={32} />
+      </div>
 
-      {/* NAVIGATION */}
-      <nav className="p-3 flex-1">
+      {/* Nav icons */}
+      <nav style={{ padding: "12px 8px", flex: 1, width: "100%" }}>
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeNav === item.label;
-
           return (
             <div
               key={item.label}
               onClick={() => handleNavClick(item.label, item.path)}
-              className="flex items-center gap-3 h-12 cursor-pointer"
+              title={item.label}
               style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "46px",
                 borderRadius: "10px",
-                background: isActive ? "#0070d1" : "transparent",
+                marginBottom: "4px",
+                cursor: "pointer",
+                background: isActive
+                  ? "linear-gradient(90deg, rgba(0,112,209,0.3), rgba(0,112,209,0.1))"
+                  : "transparent",
                 color: isActive ? "#ffffff" : "#8a9bb5",
-                boxShadow: isActive
-                  ? "0 0 12px rgba(0, 112, 209, 0.4)"
-                  : "none",
-                transition: "all 150ms ease",
-                padding: isCollapsed ? "0" : "0 16px",
-                justifyContent: isCollapsed ? "center" : "flex-start",
+                borderLeft: isActive ? "2.5px solid #0070d1" : "2.5px solid transparent",
+                transition: "all 180ms ease",
+                userSelect: "none",
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.background = "#141824";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.05)";
                   e.currentTarget.style.color = "#ffffff";
                 }
               }}
@@ -134,72 +90,12 @@ const Sidebar = ({
                   e.currentTarget.style.color = "#8a9bb5";
                 }
               }}
-              title={isCollapsed ? item.label : ""}
             >
-              <Icon size={20} />
-              {!isCollapsed && <span>{item.label}</span>}
+              <Icon size={19} />
             </div>
           );
         })}
       </nav>
-
-      {/* Bottom Section - Level Progress */}
-      {!isCollapsed && (
-        <div className="absolute bottom-4 left-3 right-3">
-          <div
-            className="p-4"
-            style={{
-              background: "#141824",
-              borderRadius: "12px",
-              border: "1px solid #1e2d45",
-            }}
-          >
-            {/* Top row */}
-            <div className="flex items-center justify-between">
-              <span style={{ color: "#8a9bb5", fontSize: "12px" }}>
-                Level Progress
-              </span>
-              <span
-                style={{
-                  color: "#0070d1",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                }}
-              >
-                {userProfile.level} → {userProfile.nextLevel}
-              </span>
-            </div>
-
-            {/* XP text */}
-            <div
-              style={{ color: "#8a9bb5", fontSize: "11px", marginTop: "8px" }}
-            >
-              {userProfile.currentXP} / {userProfile.nextLevelXP} XP
-            </div>
-
-            {/* Progress bar */}
-            <div
-              className="mt-[6px]"
-              style={{
-                height: "4px",
-                background: "#1e2d45",
-                borderRadius: "2px",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  width: `${progressPercent}%`,
-                  height: "100%",
-                  background: "linear-gradient(90deg, #0070d1, #00d4ff)",
-                  borderRadius: "2px",
-                  boxShadow: "0 0 8px rgba(0, 208, 255, 0.5)",
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
     </aside>
   );
 };

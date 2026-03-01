@@ -1,6 +1,8 @@
 import React from "react";
-import { Sparkles, Star } from "lucide-react";
+import { Gamepad2, ChevronLeft, ChevronRight } from "lucide-react";
 import { personalizedGames } from "../data/mockData.js";
+import LogoImage from "./LogoImage.jsx";
+
 
 const PersonalizedSection = () => {
   return (
@@ -66,8 +68,57 @@ const PersonalizedSection = () => {
                 background: game.gradient,
                 borderRadius: "10px",
                 overflow: "hidden",
+                position: "relative",
               }}
-            />
+            >
+              {game.poster && (
+                <img
+                  src={game.poster}
+                  alt={game.title}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center top",
+                  }}
+                />
+              )}
+              {/* Dark overlay */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.6))",
+                }}
+              />
+              {game.logo && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "8px",
+                    left: "8px",
+                    right: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 2,
+                  }}
+                >
+                  <LogoImage
+                    src={game.logo}
+                    alt={game.title}
+                    style={{
+                      maxHeight: "32px",
+                      maxWidth: "110px",
+                      objectFit: "contain",
+                      display: "block",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
 
             {/* CONTENT */}
             <div
