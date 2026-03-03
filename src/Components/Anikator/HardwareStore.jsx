@@ -109,6 +109,37 @@ export default function HardwareStore() {
         return () => cancelAnimationFrame(frameId);
     }, []);
 
+    // Keyboard navigation keys mapping 
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'ArrowDown') {
+                setActiveSection(prev => Math.min(storeCategories.length - 1, prev + 1));
+            } else if (e.key === 'ArrowUp') {
+                setActiveSection(prev => Math.max(0, prev - 1));
+            } else if (e.key === 'ArrowLeft') {
+                setActiveCols(prev => {
+                    const newCols = [...prev];
+                    newCols[activeSection] = Math.max(0, newCols[activeSection] - 1);
+                    return newCols;
+                });
+            } else if (e.key === 'ArrowRight') {
+                setActiveCols(prev => {
+                    const newCols = [...prev];
+                    newCols[activeSection] = Math.min(storeCategories[activeSection].items.length - 1, newCols[activeSection] + 1);
+                    return newCols;
+                });
+            } else if (e.key === 'Enter') {
+                gsap.fromTo(storeContainerRef.current,
+                    { opacity: 0.5, filter: 'brightness(1.5)' },
+                    { opacity: 1, filter: 'brightness(1)', duration: 0.5, ease: "power2.out" }
+                );
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [activeSection, storeCategories]);
+
     // Handle controller navigation actions
     useEffect(() => {
         if (!action) return;

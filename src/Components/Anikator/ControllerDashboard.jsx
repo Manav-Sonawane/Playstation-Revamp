@@ -4,6 +4,7 @@ import { Environment, Float, OrthographicCamera } from '@react-three/drei';
 import { useDualSenseWS } from './useDualSenseWS';
 import { useGLTF } from '@react-three/drei';
 import { useNavigate } from 'react-router-dom';
+import { QRCodeSVG } from 'qrcode.react';
 import gsap from 'gsap';
 
 // Simple 3D Controller purely for the Showcase
@@ -73,6 +74,13 @@ export default function ControllerDashboard() {
     const navigate = useNavigate();
     const bgRef = useRef(null);
     const textRef = useRef(null);
+    const [hasConnected, setHasConnected] = useState(false);
+
+    useEffect(() => {
+        if (action) {
+            setHasConnected(true);
+        }
+    }, [action]);
 
     // R1/R2 → exit showcase back to home (after the tilt animation plays)
     useEffect(() => {
@@ -181,6 +189,27 @@ export default function ControllerDashboard() {
                 <div className="absolute top-1/2 left-0 w-full h-[1px] bg-white/5"></div>
                 <div className="absolute top-0 left-1/2 w-[1px] h-full bg-white/5"></div>
             </div>
+
+            {/* Connection Popup */}
+            {!hasConnected && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md transition-opacity duration-1000">
+                    <div className="bg-[#0f141e] border border-white/10 rounded-3xl p-12 flex flex-col items-center max-w-lg text-center shadow-[0_0_80px_rgba(0,150,255,0.2)]">
+                        <h2 className="text-3xl font-black text-white tracking-widest uppercase mb-4">Connect Controller</h2>
+                        <p className="text-white/60 mb-8 font-medium leading-relaxed text-lg">
+                            Scan this QR code with your phone to use it as a DualSense controller for this showcase experience.
+                        </p>
+                        <div className="bg-white p-6 rounded-2xl mb-8 shadow-2xl">
+                            <QRCodeSVG
+                                value={`${window.location.protocol}//${window.location.host}/controller?session=${session}`}
+                                size={220}
+                            />
+                        </div>
+                        <p className="text-white/40 text-sm font-bold tracking-widest uppercase">
+                            Session: <span className="text-white/80 text-lg ml-2">{session}</span>
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
