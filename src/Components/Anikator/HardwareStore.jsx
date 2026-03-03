@@ -267,6 +267,48 @@ export default function HardwareStore() {
                 alt="Pointer"
                 className="fixed top-0 left-0 w-12 h-12 pointer-events-none z-50 drop-shadow-[0_0_15px_rgba(0,67,156,0.6)] transition-transform duration-75 hidden"
             />
+
+            {/* Visual Screen Arrows for Virtual Carousel Control */}
+            {activeCols[activeSection] > 0 && (
+                <button
+                    onClick={() => setActiveCols(prev => { const newCols = [...prev]; newCols[activeSection] -= 1; return newCols; })}
+                    className="absolute left-10 top-1/2 -translate-y-1/2 z-50 p-4 border border-white/20 rounded-full text-white/40 bg-black/40 backdrop-blur-md hover:bg-white hover:text-black transition-colors duration-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] cursor-pointer pointer-events-auto"
+                >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+            )}
+            {activeCols[activeSection] < activeCategory.items.length - 1 && (
+                <button
+                    onClick={() => setActiveCols(prev => { const newCols = [...prev]; newCols[activeSection] += 1; return newCols; })}
+                    className="absolute right-10 top-1/2 -translate-y-1/2 z-50 p-4 border border-white/20 rounded-full text-white/40 bg-black/40 backdrop-blur-md hover:bg-white hover:text-black transition-colors duration-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] cursor-pointer pointer-events-auto"
+                >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            )}
+            {activeSection > 0 && (
+                <button
+                    onClick={() => setActiveSection(prev => prev - 1)}
+                    className="absolute top-[160px] left-1/2 -translate-x-1/2 z-50 p-4 border border-white/20 rounded-full text-white/40 bg-black/40 backdrop-blur-md hover:bg-white hover:text-black transition-colors duration-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] cursor-pointer pointer-events-auto"
+                >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                </button>
+            )}
+            {activeSection < storeCategories.length - 1 && (
+                <button
+                    onClick={() => setActiveSection(prev => prev + 1)}
+                    className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 p-4 border border-white/20 rounded-full text-white/40 bg-black/40 backdrop-blur-md hover:bg-white hover:text-black transition-colors duration-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] cursor-pointer pointer-events-auto"
+                >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+            )}
         </div>
     );
 }
